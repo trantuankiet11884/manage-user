@@ -1,32 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
-import { createUser } from "../services/UserService";
+import { updateUser } from "../services/UserService";
 import { toast } from "react-toastify";
-const ModalAddNewUser = (props) => {
-  const { show, handleClose, handleUpdateTable } = props;
+const ModalEditUser = (props) => {
+  const { show, handleClose, dataEditUser, handleEditUserModal } = props;
   const [name, setName] = useState("");
   const [job, setJob] = useState("");
-  const [email, setEmail] = useState("");
 
-  const handleSubmit = async () => {
-    let res = await createUser(name, job, email);
-
-    if (res && res.id) {
-      setName("");
-      setJob("");
-      setEmail("");
-      handleClose();
-      toast.success("Complete !!!");
-      handleUpdateTable({
-        id: res.id,
-        email: email,
+  const handleEditUser = async () => {
+    let res = await updateUser(name, job);
+    console.log(res);
+    if (res && res.updatedAt) {
+      handleEditUserModal({
         first_name: name,
         last_name: job,
+        id: dataEditUser.id,
       });
-    } else {
-      toast.error("Faill!!!");
+
+      handleClose();
+      toast.success("Update Success !!!");
     }
   };
+  useEffect(() => {
+    if (show) {
+      setName(dataEditUser.first_name);
+      setJob(dataEditUser.last_name);
+    }
+  }, [dataEditUser]);
+
   return (
     <>
       <Modal
@@ -36,7 +37,7 @@ const ModalAddNewUser = (props) => {
         onHide={handleClose}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Create</Modal.Title>
+          <Modal.Title>Edit</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
@@ -65,18 +66,6 @@ const ModalAddNewUser = (props) => {
                 onChange={(e) => setJob(e.target.value)}
               />
             </div>
-            <div className="mb-3">
-              <label htmlFor="Email" className="form-label">
-                Email
-              </label>
-              <input
-                type="email"
-                className="form-control"
-                id="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
           </form>
         </Modal.Body>
 
@@ -84,8 +73,8 @@ const ModalAddNewUser = (props) => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleSubmit}>
-            Save
+          <Button variant="primary" onClick={() => handleEditUser()}>
+            Save Changes
           </Button>
         </Modal.Footer>
       </Modal>
@@ -93,4 +82,4 @@ const ModalAddNewUser = (props) => {
   );
 };
 
-export default ModalAddNewUser;
+export default ModalEditUser;
