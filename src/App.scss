@@ -13,12 +13,71 @@ code {
 }
 
 .add-new {
-  display: flex;
+  // display: flex;
   align-items: center;
   justify-content: space-between;
 
   .btn-groups {
     display: flex;
     gap: 10px;
+  }
+}
+
+.app-container {
+  .login-container {
+    margin: 0 auto;
+
+    input {
+      background: #1618230f;
+      border: none;
+      padding: 10px 5px;
+      outline: none;
+      margin-bottom: 7px;
+      border-radius: 5px;
+      &:hover {
+        background-color: #dedede;
+      }
+    }
+
+    .login-password {
+      position: relative;
+
+      i {
+        position: absolute;
+        top: 15px;
+        right: 10px;
+      }
+    }
+
+    button {
+      padding: 10px;
+      border-radius: 5px;
+      outline: none;
+      border: none;
+      cursor: pointer;
+
+      &.active {
+        background-color: #fe2c55;
+        color: #fff;
+      }
+    }
+
+    button[disabled="disabled"],
+    button:disabled {
+      cursor: not-allowed;
+    }
+
+    .back {
+      cursor: pointer;
+    }
+  }
+
+  .customize-table {
+    width: inherit;
+    overflow-x: scroll;
+  }
+
+  .pagination {
+    justify-content: center;
   }
 }
