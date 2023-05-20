@@ -6,15 +6,20 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { BrowserRouter } from "react-router-dom";
-import { UserProvider } from "./context/UserContext";
+import store from "./redux/store";
+import { Provider } from "react-redux";
+import ErrorBoundary from "./components/error_boundary/Error";
+
 ReactDOM.render(
-  <React.StrictMode>
-    <UserProvider>
+  <Provider store={store}>
+    <React.StrictMode>
       <BrowserRouter>
-        <App />
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
       </BrowserRouter>
-    </UserProvider>
-  </React.StrictMode>,
+    </React.StrictMode>
+  </Provider>,
   document.getElementById("root")
 );
 

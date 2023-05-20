@@ -1,35 +1,26 @@
 import { useEffect, useState } from "react";
-import { loginAPI } from "../services/UserService";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { UserContext } from "../context/UserContext";
+import { handleLoginRedux } from "../redux/actions/userAction";
+import { useDispatch, useSelector } from "react-redux";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassowrd] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loadingLogin, setLoadingLogin] = useState(false);
-  const navigate = useNavigate();
 
-  const { login } = useContext(UserContext);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.user.isLoading);
+  const account = useSelector((state) => state.user.account);
 
   const handleLogin = async () => {
     if (!email || !password) {
       toast.error("Email or Password is required !!!");
       return;
     }
-    setLoadingLogin(true);
-    let res = await loginAPI(email.trim(), password);
-    if (res && res.token) {
-      login(email, res.token);
-      navigate("/");
-      toast.success("Login Success !!!");
-    } else {
-      if (res && res.status === 400) {
-        toast.error(res.data.error);
-      }
-    }
-    setLoadingLogin(false);
+
+    dispatch(handleLoginRedux(email, password));
   };
 
   const handlePressEnter = (e) => {
@@ -37,6 +28,13 @@ const Login = () => {
       handleLogin();
     }
   };
+
+  useEffect(() => {
+    if (account && account.auth === true) {
+      navigate("/");
+      toast.success("Login Success !!!");
+    }
+  }, [account]);
 
   return (
     <>
@@ -76,7 +74,7 @@ const Login = () => {
           disabled={email && password ? false : true}
           onClick={() => handleLogin()}
         >
-          {loadingLogin && <i className="fa-solid fa-sync fa-spin"></i>}
+          {isLoading && <i className="fa-solid fa-sync fa-spin"></i>}
           &nbsp;Login
         </button>
         <div className="back text-center mt-5">
